@@ -1,6 +1,6 @@
 {
   "name": "blondie-inc-filtrex",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A simple, safe, JavaScript Filter Expression compiler for end-users",
   "main": "src/filtrex.js",
   "repository": "git@github.com:m93a/filtrex.git",

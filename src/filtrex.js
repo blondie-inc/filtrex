@@ -198,6 +198,7 @@ function filtrexParser() {
         ["\\)", 'return ")";'],
         ["\\,", 'return ",";'],
         ["==", 'return "==";'],
+        ["=", 'return "==";'],
         ["\\!=", 'return "!=";'],
         ["\\~=", 'return "~=";'],
         [">=", 'return ">=";'],
