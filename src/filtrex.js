@@ -155,8 +155,9 @@ exports.compileExpression = function compileExpression(expression, options) {
 
   // Patch together and return
 
-  let AsyncFunction = Object.getPrototypeOf(async function() {}).constructor;
-  let func = new AsyncFunction("fns", "std", "prop", "data", js.join(""));
+  let func = new Function(
+    `return async function(fns, std, prop, data) { ${js.join("")} };`
+  )();
 
   return function(data) {
     try {
