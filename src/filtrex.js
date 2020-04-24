@@ -79,9 +79,9 @@ exports.compileExpression = function compileExpression(expression, options) {
   if (arguments.length > 2) throw new TypeError("Too many arguments.");
 
   options = typeof options === "object" ? options : {};
-  let { extraFunctions, customProp } = options;
+  let { extraFunctions, customProp, async = false } = options;
   for (let key of Object.getOwnPropertyNames(options)) {
-    if (key !== "extraFunctions" && key !== "customProp")
+    if (!["extraFunctions", "customProp", "async"].includes(key))
       throw new TypeError(`Unknown option: ${key}`);
   }
 
@@ -156,7 +156,7 @@ exports.compileExpression = function compileExpression(expression, options) {
   // Patch together and return
 
   let func = new Function(
-    `return async function(fns, std, prop, data) { ${js.join("")} };`
+    `return ${async ? "async " : ""}function(fns, std, prop, data) { ${js.join("")} };`
   )();
 
   return function(data) {
@@ -292,16 +292,16 @@ function filtrexParser() {
         ["BOOLEAN", code([1])],
         ["NUMBER", code([1])],
         ["STRING", code([1])],
-        ["SYMBOL", code(["await prop(", 1, ", data)"])],
-        ["SYMBOL of e", code(["await prop(", 1, ",", 3, ")"])],
+        ["SYMBOL", code([`${async ? "await " : ""}prop(`, 1, ", data)"])],
+        ["SYMBOL of e", code([`${async ? "await " : ""}prop(`, 1, ",", 3, ")"])],
         [
           "SYMBOL ( )",
           code([
             "(std.isfn(fns, ",
             1,
-            ") ? await fns[",
+            `) ? ${async ? "await " : ""}fns[`,
             1,
-            "]() : await std.unknown(",
+            `]() : ${async ? "await " : ""}std.unknown(`,
             1,
             "))"
           ])
@@ -311,11 +311,11 @@ function filtrexParser() {
           code([
             "(std.isfn(fns, ",
             1,
-            ") ? await fns[",
+            `) ? ${async ? "await " : ""}fns[`,
             1,
             "](",
             3,
-            ") : await std.unknown(",
+            `) : ${async ? "await " : ""}std.unknown(`,
             1,
             "))"
           ])
